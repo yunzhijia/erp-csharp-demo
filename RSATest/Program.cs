@@ -32,10 +32,17 @@ namespace RSATest
                 byte[] lenArr = new byte[len];
                 encrytBytes.CopyTo(lenArr, 0);
                 encContents.CopyTo(lenArr, encrytBytes.Length);//把加密后的内容组装在一起
-                string resultStr = System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(lenArr));                //url加密
-                string resultcontent = "nonce=461c32501a4b11e5&eid=4494827&data=" + resultStr ;
+                //string resultStr = System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(lenArr));                //url加密
+                //string resultcontent = "nonce=461c32501a4b11e5&eid=4494827&data=" + resultStr ;
                 //Http Post请求
-                //..........
+                string url = "https://www.yunzhijia.com/openaccess/input/dept/getall";
+                var httpClient = new HttpClient(); 
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+                List<KeyValuePair<String, String>> paramList = new List<KeyValuePair<String, String>>();
+                paramList.Add(new KeyValuePair<string, string>("nonce", aesKey));
+                paramList.Add(new KeyValuePair<string, string>("eid", eid));
+                paramList.Add(new KeyValuePair<string, string>("data", Convert.ToBase64String(lenArr)));
+                var result = httpClient.PostAsync(url, new FormUrlEncodedContent(paramList)).Result.Content.ReadAsStringAsync().Result;
             }
         }
     }
